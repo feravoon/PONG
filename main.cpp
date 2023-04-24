@@ -33,9 +33,6 @@ int main(int argc, char *argv[])
             }
         }
 
-
-        //SDL_PumpEvents();
-      
         keystate = SDL_GetKeyboardState(NULL);
 
         if(keystate[SDL_SCANCODE_UP] | keystate[SDL_SCANCODE_W])
@@ -44,8 +41,6 @@ int main(int argc, char *argv[])
             lStick.moveDown();
         else
             lStick.lastMoveDir = 0;
-
-        //std::cout << lStick.lastMoveDir << std::endl;
 
         if((puck.posy+puck.height/2)>(rStick.posy+rStick.height/2+15))
             rStick.moveDown();
@@ -62,8 +57,6 @@ int main(int argc, char *argv[])
         if(puckResult==-1)
             rScore++;
 
-
-        rStick.speed = (float)rand()/(float)INT_MAX * 5;
 
         /*
         if(keystate[SDL_SCANCODE_LEFT] | keystate[SDL_SCANCODE_A])

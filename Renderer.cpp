@@ -12,8 +12,7 @@ Renderer::Renderer()
                                        SDL_WINDOWPOS_CENTERED,
                                        800, 600, 0);
  
-    // triggers the program that controls
-    // your graphics hardware and sets flags
+    // triggers the program that controls your graphics hardware and sets flags
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
  
     // creates a renderer to render our images
@@ -22,7 +21,7 @@ Renderer::Renderer()
     // creates a surface to load an image into the main memory
     SDL_Surface* surface;
  
-    // please provide a path for your image
+    // load the image
     surface = IMG_Load("tex.png");
     // loads image to our graphics hardware memory.
     this->tex = SDL_CreateTextureFromSurface(rend, surface);
@@ -30,8 +29,7 @@ Renderer::Renderer()
     // clears main-memory
     SDL_FreeSurface(surface);
  
-    // let us control our image position
-    // so that we can move it with our keyboard.
+    // let us control our image position so that we can move it with our keyboard.
     SDL_Rect dest;
  
     // connects our texture with dest to control position
@@ -40,18 +38,21 @@ Renderer::Renderer()
 
 void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
 {
-    // clears the screen
+    // set the background color
     if(puck.state==WAIT)
     {
-        if(puck.waitCounter % 10 == 0)
-            SDL_SetRenderDrawColor(rend,0,0,0,SDL_ALPHA_OPAQUE);
-
-        if(puck.waitCounter % 20 == 0)
-            SDL_SetRenderDrawColor(rend,128,128,128,SDL_ALPHA_OPAQUE);
+        int grayVal = 32*abs(sin(puck.waitCounter/5.0));
+        SDL_SetRenderDrawColor(rend,grayVal,grayVal,grayVal,SDL_ALPHA_OPAQUE);
+    }
+    else
+    {
+        SDL_SetRenderDrawColor(rend,0,0,0,SDL_ALPHA_OPAQUE);
     }
     
+    // clears the screen
     SDL_RenderClear(rend);
-    TTF_Init();//this opens a font style and sets a size
+    TTF_Init();
+    //this opens a font style and sets a size
     TTF_Font* Sans = TTF_OpenFont("/Library/Fonts/Arial Unicode.ttf", 48);
 
     // this is the color in rgb format,
@@ -62,10 +63,10 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     // as TTF_RenderText_Solid could only be used on
     // SDL_Surface then you have to create the surface first
     char rtext[20];
-    sprintf(rtext, "%d", rScore);
+    snprintf(rtext,20,"%d",rScore);
     SDL_Surface* rSurfaceMessage = TTF_RenderText_Blended(Sans, rtext, White); 
     char ltext[20];
-    sprintf(ltext, "%d", lScore);
+    snprintf(ltext,20,"%d",lScore);
     SDL_Surface* lSurfaceMessage = TTF_RenderText_Blended(Sans, ltext, White); 
     int wr,hr,wl,hl;
     TTF_SizeText(Sans, ltext, &wl, &hl);
