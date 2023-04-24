@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         if(puckResult==-1)
             rScore++;
 
-
+        rStick.speed = puck.posx/150.0f;
         /*
         if(keystate[SDL_SCANCODE_LEFT] | keystate[SDL_SCANCODE_A])
             dest.x -= speed;

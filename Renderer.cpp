@@ -78,12 +78,12 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     SDL_Rect rMessage_rect, lMessage_rect; //create a rect
     lMessage_rect.x = 35;  //controls the rect's x coordinate 
     lMessage_rect.y = 10; // controls the rect's y coordinte
-    lMessage_rect.w = wr; // controls the width of the rect
-    lMessage_rect.h = hr; // controls the height of the rect
-    rMessage_rect.x = 800 - wl - 35;  //controls the rect's x coordinate 
+    lMessage_rect.w = wl; // controls the width of the rect
+    lMessage_rect.h = hl; // controls the height of the rect
+    rMessage_rect.x = 800 - wr - 35;  //controls the rect's x coordinate 
     rMessage_rect.y = 10; // controls the rect's y coordinte
-    rMessage_rect.w = wl; // controls the width of the rect
-    rMessage_rect.h = hl; // controls the height of the rect
+    rMessage_rect.w = wr; // controls the width of the rect
+    rMessage_rect.h = hr; // controls the height of the rect
 
     SDL_RenderCopy(rend, rMessage, NULL, &rMessage_rect);
     SDL_RenderCopy(rend, lMessage, NULL, &lMessage_rect);
