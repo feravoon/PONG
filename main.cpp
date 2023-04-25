@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     Stick rStick(RIGHT);
     Puck puck;
     GameObject* objects[3] = {&lStick, &rStick, &puck};
+    float angle = 0, oldAngle = 0;
     int lScore = 0;
     int rScore = 0;
     int puckResult = 0;
@@ -42,13 +43,19 @@ int main(int argc, char *argv[])
         else
             lStick.lastMoveDir = 0;
 
-        if((puck.posy+puck.height/2)>(rStick.posy+rStick.height/2+15))
-            rStick.moveDown();
-        else if(((puck.posy+puck.height/2)<(rStick.posy+rStick.height/2-15)))
-            rStick.moveUp();
+        angle = -atan2(((float)(rStick.posy+rStick.height/2)-(puck.posy+puck.height/2)),(float)(800 - rStick.width/2 - (puck.posx + puck.width/2)));
+
+        rStick.accUpdate(13.0f*(angle-oldAngle));
+
+        oldAngle = angle;
+/*
+        if((puck.posy+puck.height/2)>(rStick.posy+rStick.height/2))
+            rStick.accUpdate(1);
+        else if(((puck.posy+puck.height/2)<(rStick.posy+rStick.height/2)))
+            rStick.accUpdate(-1);
         else
             rStick.lastMoveDir = 0;
-
+*/
         puckResult = puck.update(lStick, rStick);
 
         if(puckResult==1)
@@ -57,7 +64,7 @@ int main(int argc, char *argv[])
         if(puckResult==-1)
             rScore++;
 
-        rStick.speed = puck.posx/150.0f;
+        //rStick.speed = puck.posx/75.0f;
         /*
         if(keystate[SDL_SCANCODE_LEFT] | keystate[SDL_SCANCODE_A])
             dest.x -= speed;

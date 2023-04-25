@@ -3,12 +3,12 @@
 
 Puck::Puck()
 {
-    this->width = 10;
-    this->height = 10;
+    this->width = 16;
+    this->height = 16;
     this->posx = 400 - this->width/2;
     this->posy = 300 - this->height/2;
-    this->velocityx = 5;
-    this->velocityy = 5;
+    this->velocityx = 10;
+    this->velocityy = 10;
     this->speed = sqrtf(this->velocityx*this->velocityx+this->velocityy*this->velocityy);
     this->state = WAIT;
     this->waitCounter = 180;
@@ -40,13 +40,13 @@ int Puck::update(Stick lStick, Stick rStick)
             // The velocities below determines the direction of the puck movement after the WAIT
             if(result==1)
             {
-                this->velocityx = 5;
-                this->velocityy = 5;
+                this->velocityx = 10;
+                this->velocityy = 10;
             }
             else
             {
-                this->velocityx = -5;
-                this->velocityy = 5;
+                this->velocityx = -10;
+                this->velocityy = 10;
             }
         }    
         return result; // Return score info

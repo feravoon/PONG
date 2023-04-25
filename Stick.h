@@ -11,9 +11,11 @@ class Stick : public GameObject
 {
 public:
     Side lor;
+    float acc;
     int lastMoveDir;
     void moveUp();
     void moveDown();
+    void accUpdate(float accCommand);
     void checkBoundaries();
     Stick(Side lor);
 };
