@@ -37,7 +37,13 @@ void Stick::moveUp()
 
 void Stick::accUpdate(float accCommand)
 {
-    this->acc = accCommand;
+    const float MAX_ACC = 0.4f;
+    if(accCommand > MAX_ACC)
+        this->acc = MAX_ACC;
+    else if(accCommand < -MAX_ACC)
+        this->acc = -MAX_ACC;
+    else
+        this->acc = accCommand;
     this->speed += this->acc;
     this->posy += this->speed;
     checkBoundaries();
@@ -55,10 +61,12 @@ void Stick::checkBoundaries()
     {
         this->posy = 0;
         this->speed = 0;
+        this->lastMoveDir = 0;
     }    
     if((this->posy + this->height)>600)
     {
         this->speed = 0;
         this->posy = 600 - this->height;
+        this->lastMoveDir = 0;
     }
 }
