@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
         angle = -atan2(((float)(rStick.posy+rStick.height/2)-(puck.posy+puck.height/2)),(float)(800 - rStick.width/2 - (puck.posx + puck.width/2)));
 
-        rStick.accUpdate(20.0f*(1.01f*angle-oldAngle));
+        rStick.accUpdate(16.0f*(1.01f*angle-oldAngle));
 
         oldAngle = angle;
 /*

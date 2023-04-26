@@ -37,7 +37,8 @@ void Stick::moveUp()
 
 void Stick::accUpdate(float accCommand)
 {
-    const float MAX_ACC = 0.4f;
+    const float MAX_ACC = 100.0f;
+    const float MAX_SPEED = 12.5f;
     if(accCommand > MAX_ACC)
         this->acc = MAX_ACC;
     else if(accCommand < -MAX_ACC)
@@ -45,6 +46,14 @@ void Stick::accUpdate(float accCommand)
     else
         this->acc = accCommand;
     this->speed += this->acc;
+
+    if(this->speed > MAX_SPEED)
+        this->speed = MAX_SPEED;
+    else if(accCommand < -MAX_SPEED)
+        this->speed = -MAX_SPEED;
+
+
+
     this->posy += this->speed;
     checkBoundaries();
     if(speed>0)
