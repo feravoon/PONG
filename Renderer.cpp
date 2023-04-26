@@ -89,11 +89,11 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     lMessage_rect.x = (400 - 35 - wl)*windowHorRatio;  //controls the rect's x coordinate 
     lMessage_rect.y = 6*windowVerRatio; // controls the rect's y coordinte
     lMessage_rect.w = wl*windowHorRatio; // controls the width of the rect
-    lMessage_rect.h = hl*windowVerRatio; // controls the height of the rect
+    lMessage_rect.h = hl*windowHorRatio; // controls the height of the rect
     rMessage_rect.x = (400 + 35)*windowHorRatio;  //controls the rect's x coordinate 
     rMessage_rect.y = 6*windowVerRatio; // controls the rect's y coordinte
     rMessage_rect.w = wr*windowHorRatio; // controls the width of the rect
-    rMessage_rect.h = hr*windowVerRatio; // controls the height of the rect
+    rMessage_rect.h = hr*windowHorRatio; // controls the height of the rect
 
     SDL_RenderCopy(rend, rMessage, NULL, &rMessage_rect);
     SDL_RenderCopy(rend, lMessage, NULL, &lMessage_rect);
@@ -115,7 +115,10 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     for(int i=0; i< 3; i++)
     {
         dest.w = objects[i]->width*windowHorRatio;
-        dest.h = objects[i]->height*windowVerRatio;
+        if(i<2)
+            dest.h = objects[i]->height*windowVerRatio;
+        else
+            dest.h = objects[i]->height*windowHorRatio;
         dest.x = objects[i]->posx*windowHorRatio;
         dest.y = objects[i]->posy*windowVerRatio;
         if(i<2)
