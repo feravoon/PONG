@@ -60,11 +60,15 @@ int Puck::update(Stick lStick, Stick rStick)
 int Puck::checkCollision(Stick lStick, Stick rStick)
 {
     if(this->posy<0) // Ball touches to the top
+    {    
         this->velocityy = -this->velocityy;
-
+        return 72;
+    }
     if((this->posy + this->height)>600) // Ball touches to the bottom
+    {    
         this->velocityy = -this->velocityy;
-    
+        return 72;
+    }
     // Ball touches to the left stick
     if(this->posx < (lStick.posx+lStick.width) & this->posy <= (lStick.posy+lStick.height) & (this->posy + this->height) >= lStick.posy )
     { 
@@ -74,6 +78,7 @@ int Puck::checkCollision(Stick lStick, Stick rStick)
         float curRatio = this->speed/sqrtf(this->velocityx*this->velocityx+this->velocityy*this->velocityy);
         this->velocityx = curRatio * this->velocityx;
         this->velocityy = curRatio * this->velocityy;
+        return 67;
     }
     // Ball touches to the right stick
     if((this->posx + this->width) > (rStick.posx) & this->posy <= (rStick.posy+rStick.height) & (this->posy + this->height) >= rStick.posy )
@@ -84,13 +89,14 @@ int Puck::checkCollision(Stick lStick, Stick rStick)
         float curRatio = this->speed/sqrtf(this->velocityx*this->velocityx+this->velocityy*this->velocityy);
         this->velocityx = curRatio * this->velocityx;
         this->velocityy = curRatio * this->velocityy;
+        return 67;
     }
 
     if(this->posx<0) // means a score for right stick
         return -1;
 
-    if((this->posx + this->height)>800)
-        return 1; // means a score for left stick
+    if((this->posx + this->height)>800) // means a score for left stick
+        return 1; 
 
     return 0;
 }

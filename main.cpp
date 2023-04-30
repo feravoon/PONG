@@ -1,12 +1,14 @@
 #include "Renderer.h"
 #include "Stick.h"
 #include "Puck.h"
+#include "SoundPlayer.h"
 #include <iostream>
 #include <math.h>
  
 int main(int argc, char *argv[])
 {
     Renderer renderer;
+    SoundPlayer soundPlayer;
     Stick lStick(LEFT);
     Stick rStick(RIGHT);
     Puck puck;
@@ -58,11 +60,25 @@ int main(int argc, char *argv[])
 */
         puckResult = puck.update(lStick, rStick);
 
+        if(puckResult==72)
+            soundPlayer.playWallHit();
+
+        if(puckResult==67)
+            soundPlayer.playEffect();
+
         if(puckResult==1)
+        {
             lScore++;
+            soundPlayer.playScore();
+        }
+            
 
         if(puckResult==-1)
+        {
             rScore++;
+            soundPlayer.playScore();
+        }
+            
 
         //rStick.speed = puck.posx/75.0f;
         /*
@@ -81,6 +97,9 @@ int main(int argc, char *argv[])
  
     // destroy window
     SDL_DestroyWindow(renderer.win);
+
+    // free the sound effect
+    Mix_FreeChunk(soundPlayer.boop);
      
     // close SDL
     SDL_Quit();
