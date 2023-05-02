@@ -57,13 +57,13 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     float windowVerRatio = 2*windowHeight/600.0f;
     // clears the screen
     SDL_RenderClear(rend);
+
+    // inits the font system
     TTF_Init();
     //this opens a font style and sets a size
     TTF_Font* Sans = TTF_OpenFont("Teko/Teko-Medium.ttf", 128);
 
-    // this is the color in rgb format,
-    // maxing out all would give you the color white,
-    // and it will be your text's color
+    // this is the color in rgb (8-bit each channel) format
     SDL_Color White = {255, 255, 255};
 
     // as TTF_RenderText_Solid could only be used on
@@ -117,13 +117,13 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
         dest.w = objects[i]->width*windowHorRatio;
         if(i<2)
             dest.h = objects[i]->height*windowVerRatio;
-        else
+        else // special case for the ball
             dest.h = objects[i]->height*windowHorRatio;
         dest.x = objects[i]->posx*windowHorRatio;
         dest.y = objects[i]->posy*windowVerRatio;
         if(i<2)
             SDL_RenderCopy(rend, tex, NULL, &dest);
-        else
+        else // special case for the ball
             SDL_RenderCopy(rend, ballTex, NULL, &dest);
     }
     SDL_RenderPresent(rend);

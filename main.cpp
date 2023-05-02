@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     float angle = 0, oldAngle = 0;
     int lScore = 0;
     int rScore = 0;
-    int puckResult = 0;
+    PuckHitType puckResult = NO_HIT;
     // controls animation loop
     int close = 0;
  
@@ -45,48 +45,62 @@ int main(int argc, char *argv[])
         else
             lStick.lastMoveDir = 0;
 
+        if(keystate[SDL_SCANCODE_R])
+        {
+            // Change the puck state to WAIT and set the counter to 180 iterations (3 seconds for 60Hz refresh rate)
+            puck.waitCounter = 180;
+            puck.state = WAIT;
+            // Move the puck to center position
+            puck.posx = 400 - puck.width/2;
+            puck.posy = 300 - puck.height/2;
+
+            // The velocities below determines the direction of the puck movement after the WAIT
+            puck.velocityx = 10;
+            puck.velocityy = 10;
+
+            // reset the scores
+            lScore = 0;
+            rScore = 0;
+
+            lStick.posy = 300 - lStick.height/2;
+            lStick.speed = 0;
+            lStick.lastMoveDir = 0;
+            lStick.acc = 0;
+
+            rStick.posy = 300 - rStick.height/2;
+            rStick.speed = 0;
+            rStick.lastMoveDir = 0;
+            rStick.acc = 0;
+        }    
+
+        // angle of the line connecting the ball and the right stick
         angle = -atan2(((float)(rStick.posy+rStick.height/2)-(puck.posy+puck.height/2)),(float)(800 - rStick.width/2 - (puck.posx + puck.width/2)));
 
-        rStick.accUpdate(16.0f*(1.01f*angle-oldAngle));
+        rStick.accUpdate(20.0f*(1.01f*angle-oldAngle)); // update the acceleration of the right stick (proportional to LOS rate)
 
-        oldAngle = angle;
-/*
-        if((puck.posy+puck.height/2)>(rStick.posy+rStick.height/2))
-            rStick.accUpdate(1);
-        else if(((puck.posy+puck.height/2)<(rStick.posy+rStick.height/2)))
-            rStick.accUpdate(-1);
-        else
-            rStick.lastMoveDir = 0;
-*/
-        puckResult = puck.update(lStick, rStick);
+        oldAngle = angle; // update old angle for the next iteration
 
-        if(puckResult==72)
-            soundPlayer.playWallHit();
+        puckResult = puck.update(lStick, rStick); // update puck position and check for hits (collisions)
 
-        if(puckResult==67)
-            soundPlayer.playEffect();
+        // play appropriate sound effect
+        if(puckResult==SIDE_HIT)
+            soundPlayer.playSideHitEffect();
 
-        if(puckResult==1)
+        if(puckResult==STICK_HIT)
+            soundPlayer.playStickHitEffect();
+
+        if(puckResult==LEFT_SCORE)
         {
             lScore++;
-            soundPlayer.playScore();
+            soundPlayer.playScoreEffect();
         }
             
-
-        if(puckResult==-1)
+        if(puckResult==RIGHT_SCORE)
         {
             rScore++;
-            soundPlayer.playScore();
+            soundPlayer.playScoreEffect();
         }
             
-
-        //rStick.speed = puck.posx/75.0f;
-        /*
-        if(keystate[SDL_SCANCODE_LEFT] | keystate[SDL_SCANCODE_A])
-            dest.x -= speed;
-        if(keystate[SDL_SCANCODE_RIGHT] | keystate[SDL_SCANCODE_D])
-            dest.x += speed;
-        */
        renderer.render(objects,puck,lScore, rScore);
     }
     // destroy texture
@@ -98,9 +112,11 @@ int main(int argc, char *argv[])
     // destroy window
     SDL_DestroyWindow(renderer.win);
 
-    // free the sound effect
+    // free the sound effects
     Mix_FreeChunk(soundPlayer.boop);
-     
+    Mix_FreeChunk(soundPlayer.score);
+    Mix_FreeChunk(soundPlayer.wallHit);
+
     // close SDL
     SDL_Quit();
  

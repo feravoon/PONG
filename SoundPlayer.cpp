@@ -32,17 +32,17 @@ SoundPlayer::SoundPlayer()
     }
 }
 
-void SoundPlayer::playEffect()
+void SoundPlayer::playStickHitEffect()
 {
     Mix_PlayChannel( -1, this->boop, 0 );
 }
 
-void SoundPlayer::playWallHit()
+void SoundPlayer::playSideHitEffect()
 {
     Mix_PlayChannel( -1, this->wallHit, 0 );
 }
 
-void SoundPlayer::playScore()
+void SoundPlayer::playScoreEffect()
 {
     Mix_PlayChannel( -1, this->score, 0 );
 }

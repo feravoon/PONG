@@ -8,7 +8,7 @@ class SoundPlayer
         Mix_Chunk *wallHit;
         Mix_Chunk *score;
         SoundPlayer();
-        void playEffect();
-        void playWallHit();
-        void playScore();
+        void playStickHitEffect();
+        void playSideHitEffect();
+        void playScoreEffect();
 };
