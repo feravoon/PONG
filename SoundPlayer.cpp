@@ -10,7 +10,7 @@ SoundPlayer::SoundPlayer()
 
     }
 
-    Mix_Volume(-1, 32);
+    Mix_Volume(-1, 16);
 
     //Load sound effects
     this->boop = Mix_LoadWAV( "bling.wav" );
