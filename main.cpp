@@ -24,26 +24,29 @@ int main(int argc, char *argv[])
     //int speed = 3;
     SDL_Event event;
     const Uint8* keystate;
+    PuckState prevState = puck.state;
     // animation loop
     while (!close) {
         // Events management
         if(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT)
+            keystate = SDL_GetKeyboardState(NULL);
+            if(event.type == SDL_QUIT || keystate[SDL_SCANCODE_ESCAPE]) // Pressing escape also exits the game.
             {
                 close = true;
                 break;
             }
         }
 
-        keystate = SDL_GetKeyboardState(NULL);
-
-        if(keystate[SDL_SCANCODE_UP] | keystate[SDL_SCANCODE_W])
-            lStick.moveUp();
-        else if(keystate[SDL_SCANCODE_DOWN] | keystate[SDL_SCANCODE_S])
-            lStick.moveDown();
-        else
-            lStick.lastMoveDir = 0;
+        if(puck.state!=PAUSE)
+        {
+            if(keystate[SDL_SCANCODE_UP] | keystate[SDL_SCANCODE_W])
+                lStick.moveUp();
+            else if(keystate[SDL_SCANCODE_DOWN] | keystate[SDL_SCANCODE_S])
+                lStick.moveDown();
+            else
+                lStick.lastMoveDir = 0;
+        }
 
         if(keystate[SDL_SCANCODE_R])
         {
@@ -73,10 +76,25 @@ int main(int argc, char *argv[])
             rStick.acc = 0;
         }    
 
+        if(keystate[SDL_SCANCODE_P] && event.type == SDL_KEYDOWN)
+        {
+            if(puck.state != PAUSE)
+            {
+                prevState = puck.state;
+                puck.state = PAUSE;
+            }    
+            else
+            {
+                puck.state = prevState;
+            }
+                
+        }
+
         // angle of the line connecting the ball and the right stick
         angle = -atan2(((float)(rStick.posy+rStick.height/2)-(puck.posy+puck.height/2)),(float)(800 - rStick.width/2 - (puck.posx + puck.width/2)));
 
-        rStick.accUpdate(20.0f*(1.01f*angle-oldAngle)); // update the acceleration of the right stick (proportional to LOS rate)
+        if(puck.state!=PAUSE)
+            rStick.accUpdate(20.0f*(1.01f*angle-oldAngle)); // update the acceleration of the right stick (proportional to LOS rate)
 
         oldAngle = angle; // update old angle for the next iteration
 

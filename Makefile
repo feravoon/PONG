@@ -4,8 +4,7 @@
 CXX := clang
 
 # set the compiler flags
-CXXFLAGS := -L/opt/homebrew/lib -lSDL2 -I/opt/homebrew/include -D_THREAD_SAFE -ggdb3 -O0 -Wall -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lm 
-# add header files here
+CXXFLAGS := -L/opt/homebrew/lib -lSDL2 -I/opt/homebrew/include -D_THREAD_SAFE -ggdb3 -Ofast -Wall -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lm # add header files here
 HDRS := 
 
 INC := 

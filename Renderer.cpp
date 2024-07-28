@@ -9,7 +9,7 @@ Renderer::Renderer()
     }
 
     // creates a window
-    this->win = SDL_CreateWindow("PONG", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    this->win = SDL_CreateWindow("PONG  |  Press R for reset, P for pause.", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
  
     // triggers the program that controls your graphics hardware and sets flags
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
@@ -65,6 +65,7 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
 
     // this is the color in rgb (8-bit each channel) format
     SDL_Color White = {255, 255, 255};
+    SDL_Color Black = {0, 0, 0};
 
     // as TTF_RenderText_Solid could only be used on
     // SDL_Surface then you have to create the surface first
@@ -102,8 +103,6 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     SDL_DestroyTexture(rMessage);
     SDL_FreeSurface(lSurfaceMessage);
     SDL_DestroyTexture(lMessage);
-    TTF_CloseFont(Sans);
-    TTF_Quit();
 
     // Middle line
     dest.w = 10*windowHorRatio;
@@ -126,5 +125,29 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
         else // special case for the ball
             SDL_RenderCopy(rend, ballTex, NULL, &dest);
     }
+    
+    if(puck.state == PAUSE)
+    {
+        char ptext[20];
+        snprintf(ptext,20,"PAUSED");
+        SDL_Surface* pSurfaceMessage = TTF_RenderText(Sans, ptext, White, Black);
+        int wp,hp;
+        TTF_SizeText(Sans, ptext, &wp, &hp);
+        SDL_Texture* pMessage = SDL_CreateTextureFromSurface(rend, pSurfaceMessage);
+
+        SDL_Rect pMessage_rect; //create a rect
+        pMessage_rect.x = (400 - wp/2.0)*windowHorRatio;  //controls the rect's x coordinate 
+        pMessage_rect.y = (300 - hp/2.0)*windowVerRatio; // controls the rect's y coordinte
+        pMessage_rect.w = wp*windowHorRatio; // controls the width of the rect
+        pMessage_rect.h = hp*windowHorRatio; // controls the height of the rect
+
+        SDL_RenderCopy(rend, pMessage, NULL, &pMessage_rect);
+        // Don't forget to free your surface and texture
+        SDL_FreeSurface(pSurfaceMessage);
+        SDL_DestroyTexture(pMessage);
+    }
+
+    TTF_CloseFont(Sans);
+    TTF_Quit();
     SDL_RenderPresent(rend);
 }

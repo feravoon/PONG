@@ -23,6 +23,10 @@ PuckHitType Puck::update(Stick lStick, Stick rStick)
             this->state = MOVE; // if the counter zeroes, change the state to move
         return NO_HIT;
     }
+    else if(this->state == PAUSE)
+    {
+        return NO_HIT;
+    }
     else if (this->state == MOVE) // if the puck is in the moving state
     {
         this->posx += this->velocityx; // update x coordinate with the velocity
@@ -55,6 +59,7 @@ PuckHitType Puck::update(Stick lStick, Stick rStick)
     {
         return NO_HIT;
     }  
+
 }
 
 PuckHitType Puck::checkCollision(Stick lStick, Stick rStick)

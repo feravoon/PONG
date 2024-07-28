@@ -5,7 +5,8 @@
 enum PuckState
 {
     WAIT = 0,
-    MOVE = 1
+    MOVE = 1,
+    PAUSE = 2
 };
 
 enum PuckHitType

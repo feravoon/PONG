@@ -53,7 +53,6 @@ void Stick::accUpdate(float accCommand)
         this->speed = -MAX_SPEED;
 
 
-
     this->posy += this->speed;
     checkBoundaries();
     if(speed>0)
