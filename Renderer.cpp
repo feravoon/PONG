@@ -9,7 +9,7 @@ Renderer::Renderer()
     }
 
     // creates a window
-    this->win = SDL_CreateWindow("PONG  |  Press R for reset, P for pause.", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    this->win = SDL_CreateWindow("PONG  |  Press R to reset, P to pause, 1-5 to change the diffculty", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
  
     // triggers the program that controls your graphics hardware and sets flags
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
@@ -38,7 +38,7 @@ Renderer::Renderer()
     SDL_QueryTexture(tex, NULL, NULL, &dest.w, &dest.h);
 }
 
-void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
+void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore, int difficulty)
 {
     SDL_Rect dest;
     // set the background color
@@ -65,6 +65,7 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
 
     // this is the color in rgb (8-bit each channel) format
     SDL_Color White = {255, 255, 255};
+    SDL_Color Gray = {100, 100, 100};
     SDL_Color Black = {0, 0, 0};
 
     // as TTF_RenderText_Solid could only be used on
@@ -75,18 +76,25 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     char ltext[20];
     snprintf(ltext,20,"%d",lScore);
     SDL_Surface* lSurfaceMessage = TTF_RenderText_Blended(Sans, ltext, White); 
-    int wr,hr,wl,hl;
+    char dtext[20];
+    snprintf(dtext,20,"Difficulty = %d",difficulty);
+    SDL_Surface* dSurfaceMessage = TTF_RenderText_Blended(Sans, dtext, Gray);
+    int wr,hr,wl,hl,wd,hd;
     TTF_SizeText(Sans, ltext, &wl, &hl);
     TTF_SizeText(Sans, rtext, &wr, &hr);
+    TTF_SizeText(Sans, dtext, &wd, &hd);
     wl /= 2;
     hl /= 2;
     wr /= 2;
-    hr /= 2; 
+    hr /= 2;
+    wd /= 4;
+    hd /= 4; 
     // now you can convert it into a texture
     SDL_Texture* lMessage = SDL_CreateTextureFromSurface(rend, lSurfaceMessage);
     SDL_Texture* rMessage = SDL_CreateTextureFromSurface(rend, rSurfaceMessage);
+    SDL_Texture* dMessage = SDL_CreateTextureFromSurface(rend, dSurfaceMessage);
 
-    SDL_Rect rMessage_rect, lMessage_rect; //create a rect
+    SDL_Rect rMessage_rect, lMessage_rect, dMessage_rect; //create a rect
     lMessage_rect.x = (400 - 35 - wl)*windowHorRatio;  //controls the rect's x coordinate 
     lMessage_rect.y = 6*windowVerRatio; // controls the rect's y coordinte
     lMessage_rect.w = wl*windowHorRatio; // controls the width of the rect
@@ -95,9 +103,14 @@ void Renderer::render(GameObject* objects[], Puck puck, int lScore, int rScore)
     rMessage_rect.y = 6*windowVerRatio; // controls the rect's y coordinte
     rMessage_rect.w = wr*windowHorRatio; // controls the width of the rect
     rMessage_rect.h = hr*windowHorRatio; // controls the height of the rect
+    dMessage_rect.x = (20)*windowHorRatio;  //controls the rect's x coordinate 
+    dMessage_rect.y = 6*windowVerRatio; // controls the rect's y coordinte
+    dMessage_rect.w = wd*windowHorRatio; // controls the width of the rect
+    dMessage_rect.h = hd*windowHorRatio; // controls the height of the rect
 
     SDL_RenderCopy(rend, rMessage, NULL, &rMessage_rect);
     SDL_RenderCopy(rend, lMessage, NULL, &lMessage_rect);
+    SDL_RenderCopy(rend, dMessage, NULL, &dMessage_rect);
     // Don't forget to free your surface and texture
     SDL_FreeSurface(rSurfaceMessage);
     SDL_DestroyTexture(rMessage);

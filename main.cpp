@@ -5,6 +5,47 @@
 #include <iostream>
 #include <math.h>
  
+void resetGame(Puck &puck, Stick &lStick, Stick &rStick, int &lScore, int &rScore)
+{
+    // Change the puck state to WAIT and set the counter to 180 iterations (3 seconds for 60Hz refresh rate)
+    puck.waitCounter = 180;
+    puck.state = WAIT;
+    // Move the puck to center position
+    puck.posx = 400 - puck.width/2;
+    puck.posy = 300 - puck.height/2;
+
+    // The velocities below determines the direction of the puck movement after the WAIT
+    puck.velocityx = 10;
+    puck.velocityy = 10;
+
+    // reset the scores
+    lScore = 0;
+    rScore = 0;
+
+    lStick.posy = 300 - lStick.height/2;
+    lStick.speed = 0;
+    lStick.lastMoveDir = 0;
+    lStick.acc = 0;
+
+    rStick.posy = 300 - rStick.height/2;
+    rStick.speed = 0;
+    rStick.lastMoveDir = 0;
+    rStick.acc = 0;
+}
+
+void pauseGame(Puck &puck, PuckState prevState)
+{
+    if(puck.state != PAUSE)
+    {
+        prevState = puck.state;
+        puck.state = PAUSE;
+    }    
+    else
+    {
+        puck.state = prevState;
+    }
+} 
+
 int main(int argc, char *argv[])
 {
     Renderer renderer;
@@ -13,6 +54,7 @@ int main(int argc, char *argv[])
     Stick rStick(RIGHT);
     Puck puck;
     GameObject* objects[3] = {&lStick, &rStick, &puck};
+    int difficulty = 5;
     float angle = 0, oldAngle = 0;
     int lScore = 0;
     int rScore = 0;
@@ -48,53 +90,32 @@ int main(int argc, char *argv[])
                 lStick.lastMoveDir = 0;
         }
 
-        if(keystate[SDL_SCANCODE_R])
-        {
-            // Change the puck state to WAIT and set the counter to 180 iterations (3 seconds for 60Hz refresh rate)
-            puck.waitCounter = 180;
-            puck.state = WAIT;
-            // Move the puck to center position
-            puck.posx = 400 - puck.width/2;
-            puck.posy = 300 - puck.height/2;
+        if(keystate[SDL_SCANCODE_1])
+            difficulty = 1;
 
-            // The velocities below determines the direction of the puck movement after the WAIT
-            puck.velocityx = 10;
-            puck.velocityy = 10;
+        if(keystate[SDL_SCANCODE_2])
+            difficulty = 2;
+            
+        if(keystate[SDL_SCANCODE_3])
+            difficulty = 3;
 
-            // reset the scores
-            lScore = 0;
-            rScore = 0;
+        if(keystate[SDL_SCANCODE_4])
+            difficulty = 4;
 
-            lStick.posy = 300 - lStick.height/2;
-            lStick.speed = 0;
-            lStick.lastMoveDir = 0;
-            lStick.acc = 0;
+        if(keystate[SDL_SCANCODE_5])
+            difficulty = 5;
 
-            rStick.posy = 300 - rStick.height/2;
-            rStick.speed = 0;
-            rStick.lastMoveDir = 0;
-            rStick.acc = 0;
-        }    
+        if(keystate[SDL_SCANCODE_R] && event.type == SDL_KEYDOWN)
+            resetGame(puck, lStick, rStick, lScore, rScore);
 
         if(keystate[SDL_SCANCODE_P] && event.type == SDL_KEYDOWN)
-        {
-            if(puck.state != PAUSE)
-            {
-                prevState = puck.state;
-                puck.state = PAUSE;
-            }    
-            else
-            {
-                puck.state = prevState;
-            }
-                
-        }
+            pauseGame(puck, prevState);
 
         // angle of the line connecting the ball and the right stick
         angle = -atan2(((float)(rStick.posy+rStick.height/2)-(puck.posy+puck.height/2)),(float)(800 - rStick.width/2 - (puck.posx + puck.width/2)));
 
         if(puck.state!=PAUSE)
-            rStick.accUpdate(20.0f*(1.01f*angle-oldAngle)); // update the acceleration of the right stick (proportional to LOS rate)
+            rStick.accUpdate((10.0f+2.5f*(difficulty-1.0f))*(1.01f*angle-oldAngle)); // update the acceleration of the right stick (proportional to LOS rate)
 
         oldAngle = angle; // update old angle for the next iteration
 
@@ -119,7 +140,7 @@ int main(int argc, char *argv[])
             soundPlayer.playScoreEffect();
         }
             
-       renderer.render(objects,puck,lScore, rScore);
+       renderer.render(objects,puck,lScore, rScore, difficulty);
     }
     // destroy texture
     SDL_DestroyTexture(renderer.tex);

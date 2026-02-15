@@ -13,5 +13,5 @@ class Renderer
         SDL_Texture* ballTex;
         SDL_Rect dest;
         Renderer();
-        void render(GameObject* objects[], Puck puck, int lScore, int rScore);
+        void render(GameObject* objects[], Puck puck, int lScore, int rScore, int difficulty);
 };
